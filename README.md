@@ -26,7 +26,7 @@ This is a class which can be used to things related to the application bootstrap
 import { ApptModule, ApptBootstrap } from '@appt/core';
 
 @ApptModule()
-export class AppMain(){}
+export class AppMain {}
 
 ApptBootstrap.module('AppMain');
 ```
@@ -44,7 +44,7 @@ import { ApptModule } from '@appt/core';
 	import: ['RoutersModule', 'ControllersModule'],
 	declare: ['DatabaseComponent', 'HelpersComponent']
 })
-export class AppMain(){}
+export class AppMain {}
 ```
 The example above, shows the class (`AppMain`) handled by our module decorator, which **imports** others modules and **declares** your components. It is important to notice that: 
  - The `import` option is only used to call other **modules**;
@@ -69,7 +69,7 @@ import { Mongoose } from '@appt/mongoose';
 	},
 	inject: ['HelpersComponent']
 })
-export class AppDatabase(){
+export class AppDatabase {
 	constructor(helpers){
 		helpers.showDatabaseLog();
 	}
