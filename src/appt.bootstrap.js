@@ -8,7 +8,7 @@ class ApptBootstrap {
         
       apptEcosystem.bootFiles(config.include, config.exclude);
       
-      const ApptModule = apptEcosystem.getEntity(mainModule);
+      const ApptModule = apptEcosystem.getEntity(mainModule, 'your application\'s entrypoint');
       
       new ApptModule();
    }

@@ -1,12 +1,12 @@
 import ApptBootstrap from './appt.bootstrap';
-import ApptModule from './appt.module';
-import ApptComponent from './appt.component';
+import Module from './appt.module';
+import Component from './appt.component';
 import apptEcosystem from './appt.ecosystem';
 import TDatabase from './TDatabase';
 
 export {
-   ApptModule,
-   ApptComponent,
+   Module,
+   Component,
    TDatabase,
    ApptBootstrap,
    apptEcosystem
