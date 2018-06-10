@@ -9,7 +9,7 @@ It's interesting how the idea of framework remains the same since 90's. Even wit
 
 **We made Appt!**
 
-*This document will introduce the main concepts used by Appt while the examples (yes, you'll see some code, but **not here**) will be separated according to their respective contexts with links to them at the **Packages** session below.*
+*The firsts sessions of this document will introduce the main concepts used by Appt, which is really important to know, but if you want to jump to @appt/core package specific content, just [click here](https://www.npmjs.com/package/@appt/core#apptcore)*
 
 ## Why?
 Imagine yourself starting a new project, which you don't really sure about the architecture. You'll write some code, import packages and classes by their paths when suddenly *BOOM*: you decide to reorganize everything. You're gonna rewrite every *../../../../path* of every single file into your project. 
@@ -37,7 +37,7 @@ Because we are also talking about to create *ready-to-go NodeJs applications*, e
 
 
 # @appt/core
-This package is the main dependency of the framework. With it, you can start your NodeJs application and scale it on a *non-intrusive/non-imperative* way by maintaining everything over a **Dependency Injection Pattern** working together with a **Module/Component** abstraction provided by Appt.
+This package is the main dependency of our framework. With it, you can start your NodeJs application and scale it on a *non-intrusive/non-imperative* way by maintaining everything over a **Dependency Injection Pattern** working together with a **Module/Component** abstraction provided by Appt.
 
 ## Install
     $ npm install @appt/core --save
@@ -110,7 +110,7 @@ export class AppDatabase {
 There are few thing here: 
  - `@Component` is also a class decorator.
  - For a didactic explanation, the example above expose all the options an `@Component` can have. Which means, to put a class into Appt's ecosystem, a simple `@Component()` is needed;
- - We're using the `@appt/mongoose` plugin. It is a driver of MongoDB using Mongoose ODM ([docs here](https://github.com/brab0/appt/tree/master/plugins/mongoose)). 
+ - We're using the `@appt/mongoose` plugin. It is a driver of MongoDB using Mongoose ODM ([docs here](https://www.npmjs.com/package/@appt/mongoose)). 
  - These type of decorator can only **inject** other components and these injection are passed through the class constructor, such as seen above with the `HelpersComponent` class which will print a log of our database connection (at this example);
  - An `@Component` can get a meaning, a special behaviour passed through a Special-Type Extender (*TDatabase, in this case*).
 
@@ -127,7 +127,7 @@ A simple cli for Appt projects seed generation (until now)
 #### Install
     $ npm install -g @appt/cli
 
-**Read the docs:** https://github.com/brab0/appt/tree/master/cli
+**Read the docs:** https://www.npmjs.com/package/@appt/cli
 
     
 ### @appt/api
@@ -136,7 +136,7 @@ A ready-to-go wrapper to build amazing API's that gathers essential tools, such 
 #### Install
     $ npm install @appt/api --save
 
-**Read the docs:** https://github.com/brab0/appt/tree/master/api
+**Read the docs:** https://www.npmjs.com/package/@appt/api
 
 
 ### @appt/mongoose
@@ -145,7 +145,7 @@ A wrapper to put [mongoose](https://www.npmjs.com/package/mongoose) inside the A
 #### Install
     $ npm install @appt/mongoose --save
 
-**Read the docs:** https://github.com/brab0/appt/tree/master/plugins/mongoose
+**Read the docs:** https://www.npmjs.com/package/@appt/mongoose
 
 
 ### @appt/legacy
@@ -154,7 +154,7 @@ There was a first implementation of Appt concept. It's not maintained anymore, b
 #### Install
     $ npm install @appt/legacy --save
 
-**Read the docs:** https://github.com/brab0/appt/tree/master/legacy
+**Read the docs:** https://www.npmjs.com/package/@appt/legacy
 
 
 ## Compatibility
