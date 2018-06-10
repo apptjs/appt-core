@@ -6,9 +6,11 @@ export class ApptComponentEntity {
     this.extendValidArgs = ['type', 'config', 'use'];
     this.targetName = targetName;
 
-    this.validateDecoratorArgs(args, () => {
-      this.args = args;
-    });
+    if(args){
+      this.validateDecoratorArgs(args, () => {
+        this.args = args;
+      });
+    }    
   }
 
   areValidArgs(args, validArgs, cb){
@@ -89,7 +91,7 @@ export default function ApptComponent(decoratorArgs)  {
 
         return apptComponent.injectComponents()          
             .then(injectables => {
-              if(decoratorArgs && decoratorArgs.extend){
+              if(decoratorArgs && decoratorArgs.extend){                
                 return new decoratorArgs.extend.type()
                   .exec(decoratorArgs.extend, Target, injectables)
               } else {

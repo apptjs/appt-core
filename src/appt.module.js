@@ -6,9 +6,11 @@ export class ApptModuleEntity {
             this.extendValidArgs = ['type', 'config', 'use'];
             this.targetName = targetName;
             
-            this.validateDecoratorArgs(args, () => {
-                  this.args = args;
-            });
+            if(args){
+                  this.validateDecoratorArgs(args, () => {
+                        this.args = args;
+                  });
+            }
       }
    
       areValidArgs(args, validArgs, cb){            
