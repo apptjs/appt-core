@@ -1,13 +1,13 @@
 import apptEcosystem from './appt.ecosystem'
 
-var booted = false;
+// var booted = false;
 
 class Bootstrap {
    constructor(){}
 
    module(mainModule) {
       /** fix multibootable applications */
-      if(!booted){
+    //   if(!booted){
          booted = true
          
          const config = require(process.cwd() + '/appt.json');
@@ -19,7 +19,7 @@ class Bootstrap {
             : mainModule;
          
          new ApptModule();      
-      }
+    //   }
    }
 }
 
