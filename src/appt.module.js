@@ -105,7 +105,7 @@ export class ApptModuleEntity {
 
 export default function ApptModule(decoratorArgs)  {
       return function decorator(Target) {
-            return function(args){                  
+            return function(args){
             const apptModuleEntity = new ApptModuleEntity(Target.name, decoratorArgs);
             
             return apptModuleEntity
