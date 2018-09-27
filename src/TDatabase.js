@@ -11,10 +11,12 @@ export default class TDatabase {
         return driver
             .exec(extend.config)
                 .then(config => {
-                    if(injectables && injectables.lenght > 0)
-                        return new Target(config, ...injectables)
-                    else 
-                        return new Target(config)
+                    return new Target(config);
+
+                    // if(injectables && injectables.lenght > 0)
+                    //     return new Target(config, ...injectables)
+                    // else 
+                    //     return new Target(config)
                 })
                 .catch(ex => {
                     console.log(ex)
