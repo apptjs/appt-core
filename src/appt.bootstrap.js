@@ -1,4 +1,5 @@
-import apptEcosystem from './appt.ecosystem'
+import apptEcosystem from './appt.ecosystem';
+import apptConfig from './appt.config';
 
 var booted = false;
 
@@ -6,13 +7,15 @@ class Bootstrap {
    constructor(){}
 
    module(mainModule) {
-      /** fix multibootable applications */
+      /** fix multi-bootable applications */
       if(!booted){
          booted = true
          
-         const config = require(process.cwd() + '/appt.json');
-         
-         apptEcosystem.bootFiles(config.include, config.exclude);
+         apptConfig.set(process.cwd(), process.env.NODE_ENV);
+
+         const glob = apptConfig.getGlob();
+
+         apptEcosystem.bootFiles(glob.include, glob.exclude);
          
          const ApptModule = typeof mainModule === 'string' 
             ? apptEcosystem.getEntity(mainModule, 'your application\'s entrypoint')

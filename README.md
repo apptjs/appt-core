@@ -32,8 +32,8 @@ The whole *Appt's ecosystem* is based on *dependecy injection pattern*, using th
 ### Special-Type Extenders
 Even the main core decorators `@Module` and `@Component` have particular and simple roles, Appt also provides a way to add some powers and behaviours to them, making use of *Special-Type Extenders*. That means, even you do not need them, they can give an elegant, semantic and straightforward approach to your server implementation, database connection, routes etc. 
 
-### Default Configurations
-Because we are also talking about to create *ready-to-go NodeJs applications*, every Special-Type Extender has its default configuration. That means Appt can overcome some trivial steps on development process, such as writing `CORS`, defining `Body Parsers`, making `JWT middlewares`, configuring `Routers` etc, by simply providing built-in default configuration and, of course, letting you overwrite them.
+### Configurations
+Because we are also talking about to create *ready-to-go NodeJs applications*, every Special-Type Extender has its default configuration. That means Appt can overcome some trivial steps on development process, such as writing `CORS`, defining `Body Parsers`, making `JWT middlewares`, configuring `Routers` etc, by simply providing built-in default configuration and, of course, letting you overwrite them. If you do, you can handle those configs using `@appt/core/config` or just do it on your own.
 
 
 # @appt/core
@@ -41,7 +41,89 @@ This package is the main dependency of our framework. With it, you can start you
 
 ## Install
     $ npm install @appt/core --save
- 
+
+## Configurations
+ ### appt.json
+ Because we are talking about "*not to worry on filepaths*", appt has to be able to `glob require` your project files to put them into appt's ecosystem. To do so, every appt's project must to have an `appt.json` file, which will contain the paths to be included and excluded into the project according to the environment(`NODE_ENV`). Also, that file may keep you project configurations. Let's see the example below:
+
+*package.json* 
+ ```json 
+{
+  "name": "demo",
+  "version": "1.0",
+  "scripts": {
+    "start": "export NODE_ENV=production && node ./dist/main.module.js",
+    "dev": "babel-node ./src/main.module.js" 
+  },
+  "dependencies": {
+    "@appt/core": "1.0.30"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-plugin-transform-decorators-legacy": "^1.3.4",
+    "babel-preset-es2015": "^6.24.1"
+  }
+}
+```
+
+*appt.json*
+ ```json
+{
+   "environments": {
+      "default": {
+         "include": ["src/**/*.js", "seeds/**/*.js"],
+         "exclude": ["src/**/*.ejs"],
+         "config": "./config/development"
+	  },
+	  "production": {
+         "include": ["dist/**/*.js"],
+         "exclude": ["dist/**/*.ejs"],
+	     "config": "./config/production"
+	  }
+   }
+}
+```
+
+*./config/development.js*
+```javascript
+export default {   
+	database: { 
+		uri: 'mongodb://localhost:27017/appt-demo',
+		options: {
+			debug:  true,
+			useNewUrlParser:  true
+		}
+	}
+}
+```
+
+*./config/production.js*
+```javascript
+export default {
+	server_port: 3000, 
+	database: { 
+		uri: 'mongodb://127.53.44.23:27017/appt-production',
+		options: {
+			debug:  false,
+			useNewUrlParser:  true
+		}
+	}
+}
+```
+*What's gonna happen? *
+When we execute `npm start`, before boot the program's entry file, our script into the `package.json` will export a `production` environment. That environment will be catched by appt, which will find for it into the `appt.json` file. Once found, the correspondent configurations will be merged with those into `default` environment, overriding the matched properties.
+Executing `npm run dev`, appt won't find any `NODE_ENV` exported. Then it will assume the `default` environment configurations.
+
+ ### @appt/core/config
+Appt's configuration system is not required for any Appt's Project, but since our example is using it, let's assume the files above and see how it works running `npm run dev`:
+```javascript
+import { database } from '@appt/core/config';
+
+// will print: mongodb://localhost:27017/appt-demo
+console.log(database.uri);
+```
+*That's it!* Now, your configurations are accessible in the whole project.
+
 ## Resources
 The `@appt/core` export some resources which can be imported as seen below:
 ```javascript
@@ -52,15 +134,16 @@ import {
 	TDatabase
 } from '@appt/core';
 ```
-### ApptBootstrap
+
+### Bootstrap
 This is a class which can be used to things related to the application bootstrap. For now, the only method exported is `module()`, which of course, is responsible only for import the application's main module.
 ```javascript
-import { Module, ApptBootstrap } from '@appt/core';
+import { Module, Bootstrap } from '@appt/core';
 
 @Module()
 export class AppMain {}
 
-ApptBootstrap.module('AppMain');
+Bootstrap.module(AppMain);
 ```
 
 ### @Module
@@ -88,17 +171,11 @@ It is a class decorator responsible for the *application's logic programming*. T
 An `@Component` has the following syntax and options:
 ```javascript
 import { Component, TDatabase } from '@appt/core';
+import { database } from '@appt/core/config';
 import { Mongoose } from '@appt/mongoose';
 
 @Component({
-	extend: {
-		type: TDatabase,
-		use: [Mongoose],
-		config: {
-			uri: 'mongodb://localhost:27017/appt-demo',
-			options: {}
-		}
-	},
+	extend: TDatabase(Mongoose, database.uri, database.options),
 	inject: ['HelpersComponent']
 })
 export class AppDatabase {

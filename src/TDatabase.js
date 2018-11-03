@@ -1,23 +1,32 @@
-export default class TDatabase {
-   constructor(){}
+export default function TDatabase(driver, main = null, options = null) {
+      return {
+            target: ApptDatabase,
+            args: {
+                  driver: driver,
+                  main: main,
+                  options: options
+            }
+      };
+}
 
-   exec(extend, Target, injectables) {
-        if(extend.use instanceof Array){
-            extend.use = extend.use[0]
-        }
+class ApptDatabase {
+   constructor(extenderParams, Target, injectables){
+      return this.exec(extenderParams, Target, injectables)
+   }
 
-        const driver = new extend.use();      
-        
-        return driver
-            .exec(extend.config)
-                .then(config => {
-                    if(injectables && injectables.lenght > 0)
-                        return new Target(config, ...injectables)
-                    else 
-                        return new Target(config)
-                })
-                .catch(ex => {
-                    console.log(ex)
-                });
+   exec(extenderParams, Target, injectables){
+      const driver = new extenderParams.driver(extenderParams.main, extenderParams.options);
+      
+      return driver
+         .exec()
+            .then(config => {
+               if(injectables && injectables.lenght > 0)
+                  return new Target(...injectables, config)
+               else 
+                  return new Target(config)
+            })
+            .catch(ex => {
+               console.log(ex)
+            });
    }
 }

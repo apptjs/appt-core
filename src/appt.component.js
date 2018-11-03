@@ -3,7 +3,7 @@ import apptEcosystem from './appt.ecosystem'
 export class ApptComponentEntity {
   constructor(targetName, args){
     this.validArgs = ['inject', 'extend'];
-    this.extendValidArgs = ['type', 'config', 'use'];
+    // this.extendValidArgs = ['type', 'config', 'use'];
     this.targetName = targetName;
 
     if(args){
@@ -19,8 +19,8 @@ export class ApptComponentEntity {
         
     const invalidArgs = Object.keys(args)
       .filter((arg, index) => {                              
-            if(validArgs.indexOf(arg) === -1)
-                  return arg;
+        if(validArgs.indexOf(arg) === -1)
+          return arg;
       });
     
     if(invalidArgs.length === 1)
@@ -35,27 +35,27 @@ export class ApptComponentEntity {
 
   validateDecoratorArgs(args, cb){
     try {
-          return this.areValidArgs(args, this.validArgs, err => {
-                if(err)
-                      throw new Error(err);                        
+      return this.areValidArgs(args, this.validArgs, err => {
+        if(err)
+          throw new Error(err);                        
 
-                if(args.extend)
-                      this.validateExtendArgs(args.extend);
+        // if(args.extend)
+        //   this.validateExtendArgs(args.extend);
 
-                cb()
-          })
+        cb()
+      })
     } catch(ex) {
-          console.log(ex);
-          process.exit(0);
+      console.log(ex);
+      process.exit(0);
     }
   }
 
-  validateExtendArgs(extendArgs){    
-    this.areValidArgs(extendArgs, this.extendValidArgs, err => {
-      if(err)
-        throw new Error(err);
-    })
-  }
+  // validateExtendArgs(extendArgs){    
+  //   this.areValidArgs(extendArgs, this.extendValidArgs, err => {
+  //     if(err)
+  //       throw new Error(err);
+  //   })
+  // }
 
   injectComponents(){
     return new Promise(resolve => {
@@ -68,8 +68,8 @@ export class ApptComponentEntity {
 
         injectables = this.args.inject.map(injectable => {
           const ApptInjectable = typeof injectable === 'string'
-                ? apptEcosystem.getEntity(injectable, this.targetName) 
-                : injectable;
+            ? apptEcosystem.getEntity(injectable, this.targetName) 
+            : injectable;
 
           return new ApptInjectable();
         });      
@@ -90,17 +90,21 @@ export default function ApptComponent(decoratorArgs)  {
         const apptComponent = new ApptComponentEntity(Target.name, decoratorArgs);
 
         return apptComponent.injectComponents()          
-            .then(injectables => {
-              if(decoratorArgs && decoratorArgs.extend){                
-                return new decoratorArgs.extend.type()
-                  .exec(decoratorArgs.extend, Target, injectables)
-              } else {
-                return new Target(...injectables)
-              }
-            })
-            .catch(res => {
-              return new Target()
-            })
+          .then(injectables => {
+            if(decoratorArgs && decoratorArgs.extend){
+              if(decoratorArgs.extend.target){
+                return new decoratorArgs.extend.target(decoratorArgs.extend.args, Target, injectables)
+             } else {
+                const extender = decoratorArgs.extend();
+                return new extender.target(null, Target, injectables)
+             }              
+            } else {              
+              return new Target(...injectables)
+            }
+          })
+          .catch(res => {
+            return new Target()
+          })
      };
   }
 }
