@@ -1,4 +1,5 @@
 import apptEcosystem from './appt.ecosystem'
+import Bootstrap from './appt.bootstrap';
 
 export class ApptModuleEntity {      
    constructor(targetName, args){
@@ -93,27 +94,33 @@ export class ApptModuleEntity {
    }
 }
 
-export default function ApptModule(decoratorArgs)  {
+export default function ApptModule(decoratorArgs)  {      
    return function decorator(Target) {
+      
+      // execute only once
+      Bootstrap.module(Target);
+
       return function(args){
-         const apptModuleEntity = new ApptModuleEntity(Target.name, decoratorArgs);
-         
-         return apptModuleEntity
-            .importModules()
-            .then(() => apptModuleEntity.declareComponents())
-            .then(() => {               
-               if(decoratorArgs && decoratorArgs.extend){
-                  if(decoratorArgs.extend.target){
-                     return new decoratorArgs.extend.target(decoratorArgs.extend.args, Target)
-                  } else {
-                     const extender = decoratorArgs.extend();
-                     return new extender.target(null, Target)
-                  }
-               } else {
-                  return new Target();
-               } 
-            })
-            .catch(ex => console.log(ex))
-         };
+            const apptModuleEntity = new ApptModuleEntity(Target.name, decoratorArgs);
+            
+            return apptModuleEntity
+                  .importModules()
+                  .then(() => apptModuleEntity.declareComponents())
+                  .then(() => {               
+                        if(decoratorArgs && decoratorArgs.extend){
+                              if(decoratorArgs.extend.target){
+                                    return new decoratorArgs.extend.target(decoratorArgs.extend.args, Target)
+                              } else {
+                                    const extender = decoratorArgs.extend();
+                                    return new extender.target(null, Target)
+                              }
+                        } else {
+                              return new Target();
+                        } 
+                  })
+                  .catch(ex => console.log(ex))
+            };
    }
 }
+
+apptEcosystem.isReady().then(() => Bootstrap.run())

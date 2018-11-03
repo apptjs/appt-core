@@ -1,4 +1,3 @@
-import Bootstrap from './appt.bootstrap';
 import Module from './appt.module';
 import Component from './appt.component';
 import apptEcosystem from './appt.ecosystem';
@@ -8,6 +7,5 @@ export {
    Module,
    Component,
    TDatabase,
-   Bootstrap,
    apptEcosystem
 };

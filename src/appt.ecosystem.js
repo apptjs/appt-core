@@ -7,16 +7,16 @@ class ApptEcosystem {
    }
 
    bootFiles(include, exclude){
-       get(include, exclude)
-         .forEach(path => {           
-            require(path.replace('.ts', ''))
-         });
+      get(include, exclude)
+        .forEach(path => {           
+          require(path.replace('.ts', ''))
+        });
       
       this.boot.emit('ready');
    }
 
    getEntity(entityName, targetName){
-      try {
+      try {        
          return module.children
           .find(entity => entity.exports[entityName] != null)
             .exports[entityName];
