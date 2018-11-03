@@ -130,20 +130,8 @@ The `@appt/core` export some resources which can be imported as seen below:
 import {
 	Module,
 	Component,
-	ApptBootstrap,
 	TDatabase
 } from '@appt/core';
-```
-
-### Bootstrap
-This is a class which can be used to things related to the application bootstrap. For now, the only method exported is `module()`, which of course, is responsible only for import the application's main module.
-```javascript
-import { Module, Bootstrap } from '@appt/core';
-
-@Module()
-export class AppMain {}
-
-Bootstrap.module(AppMain);
 ```
 
 ### @Module
@@ -179,7 +167,9 @@ import { Mongoose } from '@appt/mongoose';
 	inject: ['HelpersComponent']
 })
 export class AppDatabase {
-	constructor(helpers){
+	constructor(helpers, res){
+		console.log(res.instance, res.config)
+
 		helpers.showDatabaseLog();
 	}
 }
@@ -189,11 +179,14 @@ There are few thing here:
  - For a didactic explanation, the example above expose all the options an `@Component` can have. Which means, to put a class into Appt's ecosystem, a simple `@Component()` is needed;
  - We're using the `@appt/mongoose` plugin. It is a driver of MongoDB using Mongoose ODM ([docs here](https://www.npmjs.com/package/@appt/mongoose)). 
  - These type of decorator can only **inject** other components and these injection are passed through the class constructor, such as seen above with the `HelpersComponent` class which will print a log of our database connection (at this example);
+ - By default, TDatabase appends a param into contructor returning a driver instance, in this case mongoose and the configurations used.
  - An `@Component` can get a meaning, a special behaviour passed through a Special-Type Extender (*TDatabase, in this case*).
 
 ### TDatabase
-It is the only Special-Type Extender of the package. It is only an implementation of a generic database connector that is ready/needs to couple (*use*) a 'driver' to execute what kind of database we are going to work with.
-
+It is the only Special-Type Extender of the package. It is only an implementation of a generic database connector that needs a 'driver' to execute what kind of database we are going to work with.
+```javascript
+TDatabase(Mongoose, database.uri, database.options)
+```
 
 ## Packages
 To guarantee you're gonna use (*and load*) only what you want/need, Appt is fully modularized and uncoupled by scoped packages. These are the other packages you might wanna use:
