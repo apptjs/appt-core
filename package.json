@@ -11,6 +11,7 @@
   "author": "brab0 <brabo.rodrigo@gmail.com>",
   "license": "ISC",
   "dependencies": {
+    "module-alias": "^2.1.0",
     "require-files": "^0.0.7"
   },
   "devDependencies": {

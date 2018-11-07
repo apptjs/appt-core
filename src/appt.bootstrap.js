@@ -8,7 +8,7 @@ class Bootstrap {
       this.target = {}
    }
 
-   module(Target) {
+   run() {
       /** only boot the first module called */
       if(!booted){
          booted = true
@@ -18,13 +18,11 @@ class Bootstrap {
          const glob = apptConfig.getGlob();
          
          apptEcosystem.bootFiles(glob.include, glob.exclude);
-
-         this.target = Target;
       }
    }
 
-   run(){
-      const main = apptEcosystem.getEntity(this.target.name)
+   initApp(){
+      const main = apptEcosystem.getEntity(Object.keys(require.main.exports)[0])
       new main();
    }
 }

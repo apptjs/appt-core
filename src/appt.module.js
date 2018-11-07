@@ -96,9 +96,9 @@ export class ApptModuleEntity {
 
 export default function ApptModule(decoratorArgs)  {      
    return function decorator(Target) {
-      
-      // execute only once
-      Bootstrap.module(Target);
+
+      // only in first decorators called
+      Bootstrap.run();
 
       return function(args){
             const apptModuleEntity = new ApptModuleEntity(Target.name, decoratorArgs);
@@ -123,4 +123,4 @@ export default function ApptModule(decoratorArgs)  {
    }
 }
 
-apptEcosystem.isReady().then(() => Bootstrap.run())
+apptEcosystem.isReady().then(() => Bootstrap.initApp())

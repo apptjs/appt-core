@@ -23,6 +23,7 @@ class ApptConfig {
 
          this.setGlob(defaultEnv, customEnv);
          this.setConfig(cwd, defaultEnv, customEnv);
+         this.setAliases(cwd, apptJson.paths);
 
       } catch(ex) {
          throw Error(ex);
@@ -35,6 +36,22 @@ class ApptConfig {
 
    getConfig(){
       return this.config;
+   }
+
+   setAliases(cwd, aliases){
+      if(!aliases)
+            return;
+
+      const moduleAlias = require('module-alias')
+      
+      const normalizedAliases = Object.keys(aliases)
+            .reduce((obj, key) => 
+                  Object.assign(obj, { 
+                        [key]: path.resolve(cwd, aliases[key])
+                  })
+            , {})
+
+      moduleAlias.addAliases(normalizedAliases);      
    }
 
    setGlob(defaultEnv, customEnv){
