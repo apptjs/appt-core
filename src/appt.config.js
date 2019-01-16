@@ -78,16 +78,25 @@ class ApptConfig {
          default: {},
          custom: {}
       }
-
-      if(defaultEnv.config && typeof defaultEnv.config === 'string')
-         config.default = require(path.resolve(cwd, defaultEnv.config));
-      else
-         config.default = defaultEnv.config;
-
-      if(customEnv.config && typeof customEnv.config === 'string')
-         config.custom = require(path.resolve(cwd, customEnv.config));
-      else
-         config.custom = customEnv.config;
+      
+      if(customEnv.config) {
+         if(typeof customEnv.config === 'string') {
+            config.custom = require(path.resolve(cwd, customEnv.config));
+         }            
+         else if(customEnv.config instanceof Array) {
+            config.custom = customEnv.config
+               .reduce((prev, crr) => 
+                  Object.assign(prev, require(path.resolve(cwd, crr)), {}));
+         }         
+         else {
+            config.custom = customEnv.config;
+         }            
+      } else {
+         if(defaultEnv.config && typeof defaultEnv.config === 'string')
+            config.default = require(path.resolve(cwd, defaultEnv.config));
+         else
+            config.default = defaultEnv.config;
+      }
 
       this.config = Object.assign({}, config.default, config.custom);
    }
