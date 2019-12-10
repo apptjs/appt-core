@@ -122,7 +122,7 @@ export default function ApptModule(decoratorArgs)  {
                      })
                      .catch(ex => console.log(ex))
                };
-      });
+      }).bind(this);
    }
 }
 
