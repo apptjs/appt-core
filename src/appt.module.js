@@ -124,6 +124,4 @@ export default function ApptModule(decoratorArgs)  {
    }
 }
 
-beforeFn(() => {
-   apptEcosystem.isReady().then(() => Bootstrap.initApp());
-})
+apptEcosystem.isReady().then(() => Bootstrap.initApp());
