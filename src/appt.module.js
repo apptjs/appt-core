@@ -3,7 +3,7 @@ import Bootstrap from './appt.bootstrap';
 
 export class ApptModuleEntity {      
    constructor(targetName, args){
-      this.validArgs = ['import', 'declare', 'extend'];
+      this.validArgs = ['import', 'declare', 'extend', 'timeout'];
       
       this.targetName = targetName;
       
@@ -96,30 +96,33 @@ export class ApptModuleEntity {
 
 export default function ApptModule(decoratorArgs)  {      
    return function decorator(Target) {
+      let preFn = decoratorArgs.pre || (cb => cb());
 
-      // only in first decorators called
-      Bootstrap.run();
+      preFn(() => {
+         // only in first decorators called
+         Bootstrap.run();
 
-      return function(args){
-            const apptModuleEntity = new ApptModuleEntity(Target.name, decoratorArgs);
-            
-            return apptModuleEntity
+         return function(args){
+               const apptModuleEntity = new ApptModuleEntity(Target.name, decoratorArgs);
+               
+               return apptModuleEntity
                   .importModules()
-                  .then(() => apptModuleEntity.declareComponents())
-                  .then(() => {               
-                        if(decoratorArgs && decoratorArgs.extend){
-                              if(decoratorArgs.extend.target){
-                                    return new decoratorArgs.extend.target(decoratorArgs.extend.args, Target)
-                              } else {
-                                    const extender = decoratorArgs.extend();
-                                    return new extender.target(null, Target)
-                              }
-                        } else {
-                              return new Target();
-                        } 
-                  })
-                  .catch(ex => console.log(ex))
-            };
+                     .then(() => apptModuleEntity.declareComponents())
+                     .then(() => {               
+                           if(decoratorArgs && decoratorArgs.extend){
+                                 if(decoratorArgs.extend.target){
+                                       return new decoratorArgs.extend.target(decoratorArgs.extend.args, Target)
+                                 } else {
+                                       const extender = decoratorArgs.extend();
+                                       return new extender.target(null, Target)
+                                 }
+                           } else {
+                                 return new Target();
+                           } 
+                     })
+                     .catch(ex => console.log(ex))
+               };
+      });
    }
 }
 
