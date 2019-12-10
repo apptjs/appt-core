@@ -3,7 +3,7 @@ import Bootstrap from './appt.bootstrap';
 
 export class ApptModuleEntity {      
    constructor(targetName, args){
-      this.validArgs = ['import', 'declare', 'extend', 'timeout'];
+      this.validArgs = ['import', 'declare', 'extend', 'before'];
       
       this.targetName = targetName;
       
@@ -94,36 +94,36 @@ export class ApptModuleEntity {
    }
 }
 
-export default function ApptModule(decoratorArgs)  {      
+export default function ApptModule(decoratorArgs)  {
+   const beforeFn = preFndecoratorArgs.before || (cb => cb());
+
    return function decorator(Target) {
-      let preFn = decoratorArgs.pre || (cb => cb());
+      // only in first decorators called
+      beforeFn(() => Bootstrap.run());
 
-      return preFn(() => {
-         // only in first decorators called
-         Bootstrap.run();
-
-         return function(args){
-               const apptModuleEntity = new ApptModuleEntity(Target.name, decoratorArgs);
-               
-               return apptModuleEntity
-                  .importModules()
-                     .then(() => apptModuleEntity.declareComponents())
-                     .then(() => {               
-                           if(decoratorArgs && decoratorArgs.extend){
-                                 if(decoratorArgs.extend.target){
-                                       return new decoratorArgs.extend.target(decoratorArgs.extend.args, Target)
-                                 } else {
-                                       const extender = decoratorArgs.extend();
-                                       return new extender.target(null, Target)
-                                 }
-                           } else {
-                                 return new Target();
-                           } 
-                     })
-                     .catch(ex => console.log(ex))
-               };
-      }).bind(this);
+      return function(args){
+            const apptModuleEntity = new ApptModuleEntity(Target.name, decoratorArgs);
+            
+            return apptModuleEntity
+               .importModules()
+                  .then(() => apptModuleEntity.declareComponents())
+                  .then(() => {               
+                        if(decoratorArgs && decoratorArgs.extend){
+                              if(decoratorArgs.extend.target){
+                                    return new decoratorArgs.extend.target(decoratorArgs.extend.args, Target)
+                              } else {
+                                    const extender = decoratorArgs.extend();
+                                    return new extender.target(null, Target)
+                              }
+                        } else {
+                              return new Target();
+                        } 
+                  })
+                  .catch(ex => console.log(ex))
+            };
    }
 }
 
-apptEcosystem.isReady().then(() => Bootstrap.initApp())
+beforeFn(() => {
+   apptEcosystem.isReady().then(() => Bootstrap.initApp());
+})
