@@ -95,7 +95,7 @@ export class ApptModuleEntity {
 }
 
 export default function ApptModule(decoratorArgs)  {
-   const beforeFn = preFndecoratorArgs.before || (cb => cb());
+   const beforeFn = decoratorArgs.before || (cb => cb());
 
    return function decorator(Target) {
       // only in first decorators called
