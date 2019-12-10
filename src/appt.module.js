@@ -98,7 +98,7 @@ export default function ApptModule(decoratorArgs)  {
    return function decorator(Target) {
       let preFn = decoratorArgs.pre || (cb => cb());
 
-      preFn(() => {
+      return preFn(() => {
          // only in first decorators called
          Bootstrap.run();
 
